@@ -21,10 +21,10 @@ class BaseSchema(pa.DataFrameModel):
     os: pl.UInt16
     channel: pl.UInt16
     click_time: pl.Datetime
+
+
+class TrainSchema(BaseSchema):
     attributed_time: pl.Datetime = pa.Field(nullable=True)
-
-
-class TrainSchema(pa.DataFrameModel):
     is_attributed: pl.Boolean
 
     @staticmethod
@@ -34,3 +34,6 @@ class TrainSchema(pa.DataFrameModel):
 
 class TestSchema(BaseSchema):
     click_id: pl.UInt32
+
+
+filepaths = Filepaths()
