@@ -25,13 +25,6 @@ class BaseSchema(pa.DataFrameModel):
 
 
 class TrainSchema(pa.DataFrameModel):
-    ip: pl.UInt32
-    app: pl.UInt16
-    device: pl.UInt16
-    os: pl.UInt16
-    channel: pl.UInt16
-    click_time: pl.Datetime
-    attributed_time: pl.Datetime = pa.Field(nullable=True)
     is_attributed: pl.Boolean
 
     @staticmethod
