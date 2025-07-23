@@ -3,12 +3,19 @@ name = "adtracking-fraud-detection"
 version = "0.1.0"
 description = "TalkingData AdTracking Fraud Detection Challenge"
 readme = "README.md"
-requires-python = "==3.12.11" # could not make it run on 3.13.5
+requires-python = "==3.13.3"
 dependencies = [
     "altair",
     "ipykernel",
-    "pandera[polars]>=0.25.0",
-    "polars-lts-cpu==1.31.0",
-    "scikit-learn>=1.7.0",
+    "pandera[polars]",
+    "polars",
+    "scikit-learn",
 ]
 
+[dependency-groups]
+dev = [
+    "ruff>=0.12.4",
+]
+
+[tool.ruff]
+line-length = 120
