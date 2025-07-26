@@ -16,7 +16,7 @@ class Filepaths:
 
 class BaseSchema(pa.DataFrameModel):
     ip: pl.UInt32
-    app: pl.UInt16
+    app: pl.UInt32
     device: pl.UInt16
     os: pl.UInt16
     channel: pl.UInt16
