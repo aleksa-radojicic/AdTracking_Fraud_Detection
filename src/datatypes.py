@@ -9,7 +9,7 @@ import polars as pl
 @dataclass
 class Filepaths:
     train: Path = Path("~/Projects/AdTracking_Fraud_Detection/data/train.parquet")
-    test: Path = Path("~/Projects/AdTracking_Fraud_Detection/data/test.csv")
+    test: Path = Path("~/Projects/AdTracking_Fraud_Detection/data/test.parquet")
     sample_submission: Path = Path("~/Projects/AdTracking_Fraud_Detection/data/test.csv")
     train_unique: Path = Path("~/Projects/AdTracking_Fraud_Detection/data/train_unique.parquet")
 
