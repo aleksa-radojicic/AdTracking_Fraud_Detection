@@ -59,3 +59,23 @@ def make_previous_sessions_column(
     )
     )
     return previous_sessions
+
+
+class TotalSessionsInputS(pa.DataFrameModel):
+    ip: pl.UInt32
+    previous_sessions: pl.UInt32
+
+
+class TotalSessionsOutputS(pa.DataFrameModel):
+    total_sessions: pl.UInt32
+
+
+@pa.check_types()
+def make_total_sessions_column(df: DataFrame[TotalSessionsInputS]) -> DataFrame[TotalSessionsOutputS]:
+    I = TotalSessionsInputS
+    O = TotalSessionsOutputS
+    total_sessions = (
+    df
+    .select(pl.max(I.previous_sessions).over(I.ip).add(1).alias(O.total_sessions))
+    )
+    return total_sessions
