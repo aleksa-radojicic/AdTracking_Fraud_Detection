@@ -36,4 +36,10 @@ class TestSchema(BaseSchema):
     click_id: pl.UInt32
 
 
+class ExtendedSchema(pa.DataFrameModel):
+    click_timestamp: pl.UInt32
+    previous_sessions: pl.UInt32
+    total_sessions: pl.UInt32
+
+
 filepaths = Filepaths()
