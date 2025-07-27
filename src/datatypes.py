@@ -38,8 +38,9 @@ class TestSchema(BaseSchema):
 
 class ExtendedSchema(pa.DataFrameModel):
     click_timestamp: pl.UInt32
-    previous_sessions: pl.UInt32
+    previous_sessions: pl.UInt32 # Can be viewed as an ID of the current session
     total_sessions: pl.UInt32
+    current_session_duration_till_now: pl.UInt32
     current_session_duration: pl.UInt32
     total_current_session_duration: pl.UInt32
 
