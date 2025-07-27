@@ -42,7 +42,6 @@ class ExtendedSchema(pa.DataFrameModel):
     total_sessions: pl.UInt32
     current_session_duration_till_now: pl.UInt32
     current_session_duration: pl.UInt32
-    total_current_session_duration: pl.UInt32
     avg_previous_sessions_duration: pl.Float64
 
 
