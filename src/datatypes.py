@@ -20,11 +20,11 @@ class BaseSchema(pa.DataFrameModel):
     device: pl.UInt16
     os: pl.UInt16
     channel: pl.UInt16
-    click_time: pl.Datetime
+    click_time: pl.Datetime('us')
 
 
 class TrainSchema(BaseSchema):
-    attributed_time: pl.Datetime = pa.Field(nullable=True)
+    attributed_time: pl.Datetime('us') = pa.Field(nullable=True)
     is_attributed: pl.Boolean
 
     @staticmethod
