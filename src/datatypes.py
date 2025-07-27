@@ -40,6 +40,8 @@ class ExtendedSchema(pa.DataFrameModel):
     click_timestamp: pl.UInt32
     previous_sessions: pl.UInt32
     total_sessions: pl.UInt32
+    current_session_duration: pl.UInt32
+    total_current_session_duration: pl.UInt32
 
 
 filepaths = Filepaths()
