@@ -79,3 +79,32 @@ def make_total_sessions_column(df: DataFrame[TotalSessionsInputS]) -> DataFrame[
     .select(pl.max(I.previous_sessions).over(I.ip).add(1).alias(O.total_sessions))
     )
     return total_sessions
+
+
+class CurrentSessionDurationTillNowInputS(pa.DataFrameModel):
+    ip: pl.UInt32
+    previous_sessions: pl.UInt32
+    click_timestamp: pl.UInt32
+
+
+class CurrentSessionDurationTillNowOutputS(pa.DataFrameModel):
+    current_session_duration_till_now: pl.UInt32
+
+
+@pa.check_types()
+def make_current_session_duration_till_now_column(df: DataFrame[CurrentSessionDurationTillNowInputS]) -> DataFrame[CurrentSessionDurationTillNowOutputS]:
+    I = CurrentSessionDurationTillNowInputS
+    O = CurrentSessionDurationTillNowOutputS
+    current_session_duration_till_now = (df
+    .sort(I.ip, I.previous_sessions, maintain_order=True)
+    .select(
+        pl.col(I.click_timestamp)
+        .diff()
+        .cum_sum()
+        .over(I.ip, I.previous_sessions)
+        .cast(pl.UInt32)
+        .fill_null(0)
+        .alias(O.current_session_duration_till_now)
+        )
+    )
+    return current_session_duration_till_now
