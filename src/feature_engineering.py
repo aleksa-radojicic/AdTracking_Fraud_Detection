@@ -130,3 +130,50 @@ def make_current_session_duration_column(df: DataFrame[CurrentSessionDurationInp
     )
     )
     return current_session_duration
+
+
+class AvgPreviousSessionsDurationInputS(pa.DataFrameModel):
+    ip: pl.UInt32
+    previous_sessions: pl.UInt32
+    current_session_duration: pl.UInt32
+
+
+class AvgPreviousSessionsDurationOutputS(pa.DataFrameModel):
+    avg_previous_sessions_duration: pl.Float64
+
+
+@pa.check_types()
+def make_avg_previous_sessions_duration_column(df: DataFrame[AvgPreviousSessionsDurationInputS]) -> DataFrame[AvgPreviousSessionsDurationOutputS]:
+    I = AvgPreviousSessionsDurationInputS
+    O = AvgPreviousSessionsDurationOutputS
+    avg_previous_sessions_duration_grouped = (
+      df
+      .group_by([I.ip, I.previous_sessions], maintain_order=True)
+      .agg(pl.col(I.current_session_duration).max())
+      .with_columns([
+        pl.col(I.current_session_duration)
+        .cum_sum()
+        .over(I.ip)
+        .alias("cum_prev_duration_w_current"),
+      ])
+      .with_columns(
+        pl.col("cum_prev_duration_w_current")
+        .sub(pl.col(I.current_session_duration))
+        .alias("cum_prev_duration")
+      )
+      .with_columns(
+        pl.col("cum_prev_duration")
+        .truediv(pl.col(I.previous_sessions))
+        .alias(O.avg_previous_sessions_duration)
+      )
+      .drop("cum_prev_duration_w_current", "cum_prev_duration")
+    )
+
+    avg_previous_sessions_duration = (df
+        .join(
+            avg_previous_sessions_duration_grouped,
+            on=[I.ip, I.previous_sessions],
+            how="left")
+        .select(O.avg_previous_sessions_duration)
+    )
+    return avg_previous_sessions_duration
