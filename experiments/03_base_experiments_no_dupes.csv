@@ -1,0 +1,8 @@
+Experiment,Classifier,AUC (Train),AUC (Test),Time taken,Hyperparameters,used_columns,preprocessing
+1,DecisionTree,0.9774138670823859,0.9370921653587015,31.65223934900132,default,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+1,RandomForest,0.9773445256043738,0.9517381614686695,424.73932997402153,n_estimators=100,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+1,AdaBoost,0.9273138504937584,0.9317299846920146,142.86760108100134,n_estimators=50,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+1,XGBoost,0.7896158812731691,0.7498847372420623,34.06536137999501,n_estimators=100,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+2,RandomForest,0.9773589751697138,0.9528871448065362,1995.3378996699757,n_estimators=500,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+2,AdaBoost,0.9441100500149368,0.9463607891297392,678.347483651014,n_estimators=250,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
+2,XGBoost,0.774077699053016,0.7584261060129895,134.3838631910039,n_estimators=500,"app, device, os, channel","min_frequency=0.000008, unknown_value=-1, handle_unknown='use_encoded_value', dtype=np.int16"
