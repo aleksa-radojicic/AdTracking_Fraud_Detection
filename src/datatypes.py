@@ -32,6 +32,11 @@ class TrainSchema(BaseSchema):
         return TrainSchema.is_attributed
 
 
+class TrainSchemaN(TrainSchema):
+    """When loading column `click_time` had 'us' units and later it was converted to 'ms'."""
+    click_time: pl.Datetime('ms')
+
+
 class TestSchema(BaseSchema):
     click_id: pl.UInt32
 

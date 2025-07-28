@@ -1,8 +1,10 @@
-from typing import Annotated
+from typing import Annotated, Union
 
 import pandera.polars as pa
 import polars as pl
 from pandera.typing.polars import DataFrame
+
+from src.datatypes import ExtendedSchema, TrainSchema, TrainSchemaN
 
 
 class ClickTimestampInputS(pa.DataFrameModel):
@@ -164,6 +166,7 @@ def make_avg_previous_sessions_duration_column(df: DataFrame[AvgPreviousSessions
       .with_columns(
         pl.col("cum_prev_duration")
         .truediv(pl.col(I.previous_sessions))
+        .fill_nan(-1)
         .alias(O.avg_previous_sessions_duration)
       )
       .drop("cum_prev_duration_w_current", "cum_prev_duration")
@@ -177,3 +180,27 @@ def make_avg_previous_sessions_duration_column(df: DataFrame[AvgPreviousSessions
         .select(O.avg_previous_sessions_duration)
     )
     return avg_previous_sessions_duration
+
+
+@pa.check_types(lazy=True)
+def make_derived_columns(df: DataFrame[TrainSchemaN]) -> Union[DataFrame[TrainSchemaN], DataFrame[ExtendedSchema]]:
+    click_timestamp = make_click_timestamp_column(df)
+    df_extended = df.hstack(click_timestamp)
+    previous_sessions = make_previous_sessions_column(df_extended)
+    df_extended.hstack(previous_sessions, in_place=True)
+    total_sessions = make_total_sessions_column(df_extended)
+    df_extended.hstack(total_sessions, in_place=True)
+    current_session_duration_till_now = make_current_session_duration_till_now_column(df_extended)
+    df_extended.hstack(current_session_duration_till_now, in_place=True)
+    current_session_duration = make_current_session_duration_column(df_extended)
+    df_extended.hstack(current_session_duration, in_place=True)
+    avg_previous_sessions_duration = make_avg_previous_sessions_duration_column(df_extended)
+    df_extended.hstack(avg_previous_sessions_duration, in_place=True)
+
+    # Reorder columns
+    df_extended = df_extended.select(
+        pl.all().exclude(TrainSchema.attributed_time, TrainSchema.label()),
+        TrainSchema.attributed_time,
+        TrainSchema.label(),
+    )
+    return df_extended
