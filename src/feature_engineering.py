@@ -4,7 +4,7 @@ import pandera.polars as pa
 import polars as pl
 from pandera.typing.polars import DataFrame
 
-from src.datatypes import ExtendedSchema, TrainSchema, TrainSchemaN
+from src.datatypes import ExtendedSchema, BaseSchemaN
 
 
 class ClickTimestampInputS(pa.DataFrameModel):
@@ -183,7 +183,7 @@ def make_avg_previous_sessions_duration_column(df: DataFrame[AvgPreviousSessions
 
 
 @pa.check_types(lazy=True)
-def make_derived_columns(df: DataFrame[TrainSchemaN]) -> Union[DataFrame[TrainSchemaN], DataFrame[ExtendedSchema]]:
+def make_derived_columns(df: DataFrame[BaseSchemaN]) -> Union[DataFrame[BaseSchemaN], DataFrame[ExtendedSchema]]:
     click_timestamp = make_click_timestamp_column(df)
     df_extended = df.hstack(click_timestamp)
     previous_sessions = make_previous_sessions_column(df_extended)
@@ -196,11 +196,4 @@ def make_derived_columns(df: DataFrame[TrainSchemaN]) -> Union[DataFrame[TrainSc
     df_extended.hstack(current_session_duration, in_place=True)
     avg_previous_sessions_duration = make_avg_previous_sessions_duration_column(df_extended)
     df_extended.hstack(avg_previous_sessions_duration, in_place=True)
-
-    # Reorder columns
-    df_extended = df_extended.select(
-        pl.all().exclude(TrainSchema.attributed_time, TrainSchema.label()),
-        TrainSchema.attributed_time,
-        TrainSchema.label(),
-    )
     return df_extended
