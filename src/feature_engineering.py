@@ -4,7 +4,7 @@ import pandera.polars as pa
 import polars as pl
 from pandera.typing.polars import DataFrame
 
-from src.datatypes import ExtendedSchema, BaseSchemaN
+from src.datatypes import BaseSchemaN, ExtendedSchema
 
 
 class ClickTimestampInputS(pa.DataFrameModel):

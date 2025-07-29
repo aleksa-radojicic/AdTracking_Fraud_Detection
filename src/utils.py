@@ -2,12 +2,11 @@ import gc
 from time import perf_counter
 from typing import Any
 
+import polars as pl
 from sklearn import clone
 from sklearn.base import BaseEstimator
 from sklearn.metrics import roc_auc_score
 from sklearn.pipeline import Pipeline
-
-import polars as pl
 
 
 def do_experiment(
