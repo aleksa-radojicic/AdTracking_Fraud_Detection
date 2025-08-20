@@ -7,6 +7,33 @@ from pandera.typing.polars import DataFrame
 from src.datatypes import BaseSchemaN, ExtendedSchema
 
 
+class ClickCountsGroupInputS(pa.DataFrameModel):
+    ip: pl.UInt32
+
+
+class ClickCountsGroupOutputS(pa.DataFrameModel):
+    click_counts_group: pl.Enum(['G0', 'G1'])
+
+
+@pa.check_types()
+def make_click_counts_group(df: DataFrame[ClickCountsGroupInputS]) -> DataFrame[ClickCountsGroupOutputS]:
+    I = ClickCountsGroupInputS
+    O = ClickCountsGroupOutputS
+
+    # Group IPs by the number of clicks and create a new column `click_counts_group`
+    
+    ip_counts = df.group_by(I.ip).agg(pl.len().alias('ip_counts')).select('ip_counts')
+
+    output_df = (
+        df.join(df.group_by(I.ip).agg(pl.len().alias(O.click_counts_group)), on=I.ip)
+        .with_columns(pl.col(O.click_counts_group).cut(
+            breaks=[ip_counts.quantile(0.75).row(0)[0] + 1],
+            labels=['G0', 'G1']
+        ).cast(pl.Enum(['G0', 'G1'])))
+    )
+    return output_df.select(O.click_counts_group)
+
+
 class ClickTimestampInputS(pa.DataFrameModel):
     click_time: pl.Datetime('ms')
 
@@ -184,8 +211,10 @@ def make_avg_previous_sessions_duration_column(df: DataFrame[AvgPreviousSessions
 
 @pa.check_types(lazy=True)
 def make_derived_columns(df: DataFrame[BaseSchemaN]) -> Union[DataFrame[BaseSchemaN], DataFrame[ExtendedSchema]]:
+    click_counts_group = make_click_counts_group(df)
+    df_extended = df.hstack(click_counts_group)
     click_timestamp = make_click_timestamp_column(df)
-    df_extended = df.hstack(click_timestamp)
+    df_extended.hstack(click_timestamp, in_place=True)
     previous_sessions = make_previous_sessions_column(df_extended)
     df_extended.hstack(previous_sessions, in_place=True)
     total_sessions = make_total_sessions_column(df_extended)

@@ -44,7 +44,7 @@ class TestSchema(BaseSchema):
 
 
 class ExtendedSchema(pa.DataFrameModel):
-    is_valley_hour: pl.Boolean
+    click_counts_group: pl.Enum(['G0', 'G1'])  # Group 0: clicks between [ip_counts.min(), ip_counts.quantile(0.75)+1), Group 1: clicks between [ip_counts.quantile(0.75)+1, ip_counts_above_3rd_quantile.quantile(0.75)+1), Group 2: clicks >= ip_counts_above_3rd_quantile.quantile(0.75)+1
     click_timestamp: pl.UInt32
     previous_sessions: pl.UInt32 # Can be viewed as an ID of the current session
     total_sessions: pl.UInt32
