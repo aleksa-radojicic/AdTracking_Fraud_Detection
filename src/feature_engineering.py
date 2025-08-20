@@ -7,6 +7,27 @@ from pandera.typing.polars import DataFrame
 from src.datatypes import BaseSchemaN, ExtendedSchema
 
 
+class ValleyHourInputS(pa.DataFrameModel):
+    click_time: pl.Datetime('ms')
+
+
+class ValleyHourOutputS(pa.DataFrameModel):
+    is_valley_hour: pl.Boolean
+
+
+@pa.check_types()
+def make_is_valley_hour_column(df: DataFrame[ValleyHourInputS]) -> DataFrame[ValleyHourOutputS]:
+    I = ValleyHourInputS
+    O = ValleyHourOutputS
+    is_valley_hour = df.select(
+        pl.col(I.click_time).dt.time().is_between(
+            pl.time(hour=15, minute=30),
+            pl.time(hour=23)
+        ).alias(O.is_valley_hour)
+    )
+    return is_valley_hour
+
+
 class ClickTimestampInputS(pa.DataFrameModel):
     click_time: pl.Datetime('ms')
 

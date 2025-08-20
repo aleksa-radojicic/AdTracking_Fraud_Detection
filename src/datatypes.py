@@ -44,6 +44,7 @@ class TestSchema(BaseSchema):
 
 
 class ExtendedSchema(pa.DataFrameModel):
+    is_valley_hour: pl.Boolean
     click_timestamp: pl.UInt32
     previous_sessions: pl.UInt32 # Can be viewed as an ID of the current session
     total_sessions: pl.UInt32
