@@ -9,6 +9,9 @@ from sklearn.metrics import roc_auc_score
 from sklearn.pipeline import Pipeline
 
 
+N_DIGITS = 10
+
+
 def do_experiment(
     classifiers: dict[str, tuple[Pipeline, BaseEstimator]],
     X_train: pl.DataFrame,
@@ -32,9 +35,9 @@ def do_experiment(
         y_train_proba = pipeline.predict_proba(X_train)[:, 1]
         y_test_proba  = pipeline.predict_proba(X_test)[:, 1]
     
-        auc_train: float = roc_auc_score(y_train, y_train_proba)
-        auc_test: float = roc_auc_score(y_test,  y_test_proba)
-    
+        auc_train: float = round(roc_auc_score(y_train, y_train_proba), N_DIGITS)
+        auc_test: float = round(roc_auc_score(y_test,  y_test_proba), N_DIGITS)
+
         time_ended = perf_counter()
         time_taken = time_ended - time_started
 
