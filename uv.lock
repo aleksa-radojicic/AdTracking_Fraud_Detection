@@ -9,6 +9,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "altair" },
     { name = "ipykernel" },
+    { name = "joblib" },
     { name = "matplotlib" },
     { name = "pandas" },
     { name = "pandera", extra = ["polars"] },
@@ -27,6 +28,7 @@ dev = [
 requires-dist = [
     { name = "altair" },
     { name = "ipykernel" },
+    { name = "joblib", specifier = ">=1.5.1" },
     { name = "matplotlib", specifier = ">=3.10.5" },
     { name = "pandas", specifier = ">=2.3.1" },
     { name = "pandera", extras = ["polars"] },
